@@ -6,5 +6,6 @@ Boilerplate for node.js typescript app
 
 1. Run npm i -g typescript
 2. Run npm i
-3. Open [http://localhost:3000](http://localhost:3000)
-4. You should see "Hello"
+3. Run npm run dev
+4. Open [http://localhost:3000](http://localhost:3000)
+5. You should see "Hello"
