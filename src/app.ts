@@ -1,10 +1,10 @@
-import express from 'express'
 import 'dotenv/config'
-import { PORT } from './config/core'
+import express, { Request, Response } from 'express'
+import { PORT } from './config'
 
 const app = express()
 
-app.get('/', (_req, res) => {
+app.get('/', (_req: Request, res: Response) => {
   res.send('Hello')
 })
 
