@@ -4,13 +4,18 @@ import express from 'express'
 import cors from 'cors'
 import response from './middleware/response'
 import routes from './route'
+import { connect } from '@/util/db'
 
-const app = express()
-const PORT = process.env.PORT || '8000'
+(async () => {
+    await connect()
 
-app.use(cors())
-app.use(express.json())
-app.use(response)
-app.use(routes)
+    const app = express()
+    const PORT = process.env.PORT || '8000'
 
-app.listen(PORT, () => console.log(`App running on port ${PORT}!`))
+    app.use(cors())
+    app.use(express.json())
+    app.use(response)
+    app.use(routes)
+
+    app.listen(PORT, () => console.log(`App running on port ${PORT}!`))
+})()
