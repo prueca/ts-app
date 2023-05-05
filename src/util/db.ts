@@ -1,5 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb'
 import { JSON } from '@/type-def'
+import { errors } from '@/util'
 
 let client: MongoClient | null = null
 
@@ -24,9 +25,11 @@ export const getCollection = async (cName: string) => {
 }
 
 export const oid = (id?: string) => {
-  if (id) return new ObjectId(id)
-
-  return new ObjectId()
+  try {
+    return new ObjectId(id)
+  } catch (error: Error | unknown) {
+    throw new Error(errors.invalid_id)
+  }
 }
 
 export const find = async (cName: string) => {
@@ -47,6 +50,16 @@ export const findOne = async (cName: string, filter: JSON, options?: JSON) => {
   const collection = await getCollection(cName)
 
   return collection.findOne(filter, options)
+}
+
+export const findOneAndUpdate = async (cName: string, filter: JSON, update: JSON, options?: JSON) => {
+  const collection = await getCollection(cName)
+
+  return collection.findOneAndUpdate(filter, update, {
+    upsert: false,
+    returnDocument: 'after',
+    ...options
+  })
 }
 
 export const count = async (cName: string, filter: JSON, options?: JSON) => {

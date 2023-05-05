@@ -5,6 +5,7 @@ import { db } from '@/util'
 
 const extract = (req: Request) => {
   const data = _.pick(req.body, [
+    '_id',
     'product_code',
     'name',
     'description',
@@ -16,13 +17,14 @@ const extract = (req: Request) => {
 
   const schema = Joi.object()
     .keys({
-      product_code: Joi.string().required(),
-      name: Joi.string().required(),
-      description: Joi.string().required(),
-      unit_price: Joi.number().required(),
-      srp: Joi.number().required(),
+      _id: Joi.any().required(),
+      product_code: Joi.string(),
+      name: Joi.string(),
+      description: Joi.string(),
+      unit_price: Joi.number(),
+      srp: Joi.number(),
       pcs_per_case: Joi.number().allow(null),
-      stock: Joi.number().required(),
+      stock: Joi.number(),
     })
 
   const result = schema.validate(data)
@@ -32,12 +34,7 @@ const extract = (req: Request) => {
   }
 
   _.assign(result.value, {
-    stock_up: [
-      {
-        pcs: result.value.stock,
-        date: new Date
-      }
-    ]
+    _id: db.oid(result.value._id)
   })
 
   return result
@@ -50,7 +47,19 @@ export default async (req: Request, res: Response) => {
     return res.error('validation_error', error.message)
   }
 
-  const doc = await db.insertOne('products', value)
+  const filter = _.pick(value, ['_id'])
+  const update = {
+    $set: _.pick(value, [
+      'product_code',
+      'name',
+      'description',
+      'unit_price',
+      'srp',
+      'pcs_per_case',
+      'stock',
+    ])
+  }
+  const result = await db.findOneAndUpdate('products', filter, update)
 
-  res.data(doc)
+  res.data({ ...result.value })
 }
