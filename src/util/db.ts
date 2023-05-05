@@ -38,7 +38,9 @@ export const find = async (cName: string) => {
 export const insertOne = async (cName: string, data: JSON, options?: JSON) => {
   const collection = await getCollection(cName)
 
-  return collection.insertOne(data, options)
+  const { insertedId } = await collection.insertOne(data, options)
+
+  return { _id: insertedId, ...data }
 }
 
 export const findOne = async (cName: string, filter: JSON, options?: JSON) => {
