@@ -40,7 +40,6 @@ export const find = async (cName: string) => {
 
 export const insertOne = async (cName: string, data: JSON, options?: JSON) => {
   const collection = await getCollection(cName)
-
   const { insertedId } = await collection.insertOne(data, options)
 
   return { _id: insertedId, ...data }
@@ -54,12 +53,13 @@ export const findOne = async (cName: string, filter: JSON, options?: JSON) => {
 
 export const findOneAndUpdate = async (cName: string, filter: JSON, update: JSON, options?: JSON) => {
   const collection = await getCollection(cName)
-
-  return collection.findOneAndUpdate(filter, update, {
+  const result = await collection.findOneAndUpdate(filter, update, {
     upsert: false,
     returnDocument: 'after',
     ...options
   })
+
+  return result.value
 }
 
 export const count = async (cName: string, filter: JSON, options?: JSON) => {

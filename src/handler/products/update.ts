@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import Joi from 'joi'
 import _ from 'lodash'
 import { db } from '@/util'
+import { JSON } from '@/type-def'
 
 const extract = (req: Request) => {
   const data = _.pick(req.body, [
@@ -40,16 +41,10 @@ const extract = (req: Request) => {
   return result
 }
 
-export default async (req: Request, res: Response) => {
-  const { value, error } = extract(req)
-
-  if (error) {
-    return res.error('validation_error', error.message)
-  }
-
-  const filter = _.pick(value, ['_id'])
+const update = async (data: JSON) => {
+  const filter = _.pick(data, ['_id'])
   const update = {
-    $set: _.pick(value, [
+    $set: _.pick(data, [
       'product_code',
       'name',
       'description',
@@ -59,7 +54,19 @@ export default async (req: Request, res: Response) => {
       'stock',
     ])
   }
-  const result = await db.findOneAndUpdate('products', filter, update)
+  const doc = await db.findOneAndUpdate('products', filter, update)
 
-  res.data({ ...result.value })
+  return { ...doc }
+}
+
+export default async (req: Request, res: Response) => {
+  const { value, error } = extract(req)
+
+  if (error) {
+    return res.error('validation_error', error.message)
+  }
+
+  const doc = await update(value)
+
+  res.data(doc)
 }
