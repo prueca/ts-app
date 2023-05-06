@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb'
-import { KeyVal } from '@/type-def'
-import CustomError from '@/util/custom-error'
+import { KeyVal } from './types'
+import CustomError from './custom-error'
 
 let client: MongoClient | null = null
 

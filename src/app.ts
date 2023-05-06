@@ -3,8 +3,8 @@ import 'module-alias/register'
 import express from 'express'
 import cors from 'cors'
 import routes from './route'
-import context from '@/middleware/bind-context'
-import { connect } from '@/util/db'
+import bindContext from '@/core/bind-context'
+import { connect } from '@/core/db'
 
 (async () => {
     await connect()
@@ -14,7 +14,7 @@ import { connect } from '@/util/db'
 
     app.use(cors())
     app.use(express.json())
-    app.use(context)
+    app.use(bindContext)
     app.use(routes)
 
     app.listen(PORT, () => console.log(`App running on port ${PORT}!`))

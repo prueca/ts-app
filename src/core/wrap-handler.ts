@@ -1,7 +1,7 @@
 import { Request } from 'express'
-import { RequestHandler } from '@/type-def'
+import Context from '@/core/context'
 import CustomError from './custom-error'
-import Context from './context'
+import { RequestHandler } from './types'
 
 export default (handler: RequestHandler) => {
   const wrapper = async (req: Request) => {

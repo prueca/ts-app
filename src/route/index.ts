@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import wrap from '@/util/wrap-handler'
+import wrap from '@/core/wrap-handler'
 import ping from '@/handler/ping'
 import products from './products'
 

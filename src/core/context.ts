@@ -1,30 +1,23 @@
 import { Request, Response } from 'express'
-import { KeyVal } from '@/type-def'
-import CustomError from '@/util/custom-error'
-import * as db from '@/util/db'
+import { KeyVal } from './types'
+import * as db from './db'
+import CustomError from './custom-error'
 import _ from 'lodash'
 
 export default class Context {
   static _bindings = new WeakMap<Request, Context>()
-  private req: Request
-  private res: Response
+  private _req: Request
+  private _res: Response
   public params: KeyVal = {}
   public db = db
 
   constructor(req: Request, res: Response) {
-    this.req = req
-    this.res = res
+    this._req = req
+    this._res = res
   }
 
   static bind(req: Request, res: Response) {
     const ctx = new Context(req, res)
-
-    _.assign(
-      ctx.params,
-      _.mapKeys(req.body, (_v, k) => k),
-      _.mapKeys(req.params, (_v, k) => k),
-      _.mapKeys(req.query, (_v, k) => k),
-    )
 
     Context._bindings.set(req, ctx)
   }
@@ -34,9 +27,9 @@ export default class Context {
 
     _.assign(
       ctx.params,
-      _.mapKeys(req.body, (_v, k) => k),
-      _.mapKeys(req.params, (_v, k) => k),
       _.mapKeys(req.query, (_v, k) => k),
+      _.mapKeys(req.params, (_v, k) => k),
+      _.mapKeys(req.body, (_v, k) => k),
     )
 
     return ctx
@@ -44,12 +37,12 @@ export default class Context {
 
   data(data: KeyVal, filter?: string[]) {
     if (filter) {
-      return this.res.json({
+      return this._res.json({
         data: _.pick(data, filter)
       })
     }
 
-    return this.res.json({ data })
+    return this._res.json({ data })
   }
 
   error(error: CustomError | Error) {
@@ -57,7 +50,7 @@ export default class Context {
     const code = _.get(error, 'code', 'unknown_error')
     const message = _.get(error, 'message', '')
 
-    return this.res.status(status)
+    return this._res.status(status)
       .json({
         error: {
           code: code,
@@ -67,11 +60,11 @@ export default class Context {
   }
 
   request() {
-    return this.req
+    return this._req
   }
 
   response() {
-    return this.res
+    return this._res
   }
 
   throw(errorCode: string, message?: string) {

@@ -11,5 +11,6 @@ export interface RequestHandler {
  * Definition for JSON objects
  */
 export interface KeyVal {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }

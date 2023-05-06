@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import wrap from '@/util/wrap-handler'
+import wrap from '@/core/wrap-handler'
 import * as products from '@/handler/products'
 
 const router = Router()

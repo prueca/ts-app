@@ -1,5 +1,5 @@
-import Context from '@/util/context'
-import { KeyVal } from '@/type-def'
+import Context from '@/core/context'
+import { KeyVal } from '@/core/types'
 import Joi from 'joi'
 import _ from 'lodash'
 
