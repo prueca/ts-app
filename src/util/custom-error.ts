@@ -1,9 +1,24 @@
 const errors = {
-  unknown_error: 'Unknown server error',
-  validation_error: 'Schema validation error',
-  invalid_id: 'Invalid object id',
-  not_found: 'Record not found',
-  conflict: 'Record already exists',
+  unknown_error: {
+    status: 500,
+    message: 'Unknown server error'
+  },
+  validation_error: {
+    status: 400,
+    message: 'Schema validation error'
+  },
+  invalid_id: {
+    status: 400,
+    message: 'Invalid id'
+  },
+  not_found: {
+    status: 404,
+    message: 'Record not found'
+  },
+  conflict: {
+    status: 409,
+    message: 'Record already exists'
+  },
 }
 
 export default class CustomError extends Error {
@@ -11,10 +26,10 @@ export default class CustomError extends Error {
   code = 'unknown_error'
   message = 'Unknown server error'
 
-  constructor(code: string, status = 500, message?: string) {
+  constructor(code: string, message?: string) {
     super()
-    this.status = status
     this.code = code
-    this.message = message || errors[code as keyof typeof errors]
+    this.status = errors[code as keyof typeof errors].status
+    this.message = message || errors[code as keyof typeof errors].message
   }
 }

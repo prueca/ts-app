@@ -29,11 +29,7 @@ const extract = (req: Request) => {
   const result = schema.validate(data)
 
   if (result.error) {
-    throw new CustomError(
-      'validation_error',
-      400,
-      result.error.message
-    )
+    throw new CustomError('validation_error', result.error.message)
   }
 
   _.assign(result.value, {
@@ -54,11 +50,7 @@ const create = async (data: JSON) => {
   })
 
   if (doc) {
-    throw new CustomError(
-      'conflict',
-      409,
-      'Product code already exists'
-    )
+    throw new CustomError('conflict', 'Product code already exists')
   }
 
   doc = await db.insertOne('products', data)

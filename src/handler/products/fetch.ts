@@ -7,7 +7,7 @@ export default async (req: Request, res: Response) => {
   })
 
   if (!doc) {
-    throw new CustomError('not_found', 404)
+    throw new CustomError('not_found')
   }
 
   res.data(doc)

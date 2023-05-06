@@ -31,7 +31,7 @@ const extract = (req: Request) => {
   const result = schema.validate(data)
 
   if (result.error) {
-    throw new CustomError('validation_error', 400)
+    throw new CustomError('validation_error')
   }
 
   try {
@@ -39,7 +39,7 @@ const extract = (req: Request) => {
       _id: db.oid(result.value._id)
     })
   } catch (error) {
-    throw new CustomError('invalid_id', 400)
+    throw new CustomError('invalid_id')
   }
 
   return result.value
@@ -65,11 +65,7 @@ const update = async (data: JSON) => {
   })
 
   if (doc) {
-    throw new CustomError(
-      'conflict',
-      409,
-      'Product code already exists'
-    )
+    throw new CustomError('conflict', 'Product code already exists')
   }
 
   doc = await db.findOneAndUpdate('products', filter, update)
