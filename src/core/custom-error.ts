@@ -19,6 +19,10 @@ const errors = {
     status: 409,
     message: 'Record already exists'
   },
+  missing_data: {
+    status: 400,
+    message: 'Missing data'
+  }
 }
 
 export default class CustomError extends Error {

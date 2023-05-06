@@ -8,5 +8,6 @@ router.get('/:productCode', wrap(products.fetch))
 router.post('/', wrap(products.create))
 router.post('/update', wrap(products.update))
 router.post('/restock', wrap(products.restock))
+router.post('/archival', wrap(products.archival))
 
 export default router

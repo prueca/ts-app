@@ -4,7 +4,7 @@ import Context from './context'
  * Request handler definition
  */
 export interface RequestHandler {
-  (ctx: Context): Promise<unknown>
+  (ctx: Context): Promise<any>
 }
 
 /**
