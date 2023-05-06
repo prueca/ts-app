@@ -1,10 +1,11 @@
 import { Router } from 'express'
-import wrapHandler from '@/util/wrap-handler'
+import wrap from '@/util/wrap-handler'
 import * as products from '@/handler/products'
 
 const router = Router()
 
-router.post('/', wrapHandler(products.create))
-router.post('/update', wrapHandler(products.update))
+router.get('/:code', wrap(products.fetch))
+router.post('/', wrap(products.create))
+router.post('/update', wrap(products.update))
 
 export default router
