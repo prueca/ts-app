@@ -6,23 +6,23 @@ import { JSON } from '@/type-def'
 
 const extract = (req: Request) => {
   const data = _.pick(req.body, [
-    'product_code',
+    'productCode',
     'name',
     'description',
-    'unit_price',
+    'unitPrice',
     'srp',
-    'pcs_per_case',
+    'itemsPerCase',
     'stock',
   ])
 
   const schema = Joi.object()
     .keys({
-      product_code: Joi.string().required(),
+      productCode: Joi.string().required(),
       name: Joi.string().required(),
       description: Joi.string().required(),
-      unit_price: Joi.number().required(),
+      unitPrice: Joi.number().required(),
       srp: Joi.number().required(),
-      pcs_per_case: Joi.number().allow(null),
+      itemsPerCase: Joi.number().allow(null),
       stock: Joi.number().required(),
     })
 
@@ -37,7 +37,7 @@ const extract = (req: Request) => {
   }
 
   _.assign(result.value, {
-    stock_up: [
+    stockUp: [
       {
         pcs: result.value.stock,
         date: new Date
@@ -49,7 +49,19 @@ const extract = (req: Request) => {
 }
 
 const create = async (data: JSON) => {
-  const doc = await db.insertOne('products', data)
+  let doc = await db.findOne('products', {
+    productCode: data.productCode
+  })
+
+  if (doc) {
+    throw new CustomError(
+      'conflict',
+      409,
+      'Product code already exists'
+    )
+  }
+
+  doc = await db.insertOne('products', data)
 
   return doc
 }

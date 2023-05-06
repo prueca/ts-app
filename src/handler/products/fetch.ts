@@ -3,7 +3,7 @@ import { CustomError, db } from '@/util'
 
 export default async (req: Request, res: Response) => {
   const doc = await db.findOne('products', {
-    product_code: req.params.code
+    product_code: req.params.product_code
   })
 
   if (!doc) {
