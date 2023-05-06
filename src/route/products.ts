@@ -4,7 +4,7 @@ import * as products from '@/handler/products'
 
 const router = Router()
 
-router.get('/:product_code', wrap(products.fetch))
+router.get('/:productCode', wrap(products.fetch))
 router.post('/', wrap(products.create))
 router.post('/update', wrap(products.update))
 
