@@ -1,14 +1,16 @@
 import { Request, Response } from 'express'
-import { KeyVal } from './types'
-import * as db from './db'
+import { Dictionary } from './types'
 import CustomError from './custom-error'
+import * as db from './db'
 import _ from 'lodash'
 
 export default class Context {
   static _bindings = new WeakMap<Request, Context>()
+
   private _req: Request
   private _res: Response
-  public params: KeyVal = {}
+
+  public params: Dictionary = {}
   public db = db
 
   constructor(req: Request, res: Response) {
@@ -35,7 +37,7 @@ export default class Context {
     return ctx
   }
 
-  data(data: KeyVal, filter?: string[]) {
+  data(data: Dictionary, filter?: string[]) {
     if (filter) {
       return this._res.json({
         data: _.pick(data, filter)

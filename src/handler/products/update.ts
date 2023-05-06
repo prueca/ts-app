@@ -1,5 +1,5 @@
 import Context from '@/core/context'
-import { KeyVal } from '@/core/types'
+import { Dictionary } from '@/core/types'
 import Joi from 'joi'
 import _ from 'lodash'
 
@@ -44,7 +44,7 @@ const extract = (ctx: Context) => {
   return result.value
 }
 
-const update = async (ctx: Context, data: KeyVal) => {
+const update = async (ctx: Context, data: Dictionary) => {
   const filter = _.pick(data, ['_id'])
   const update = {
     $set: _.pick(data, [
@@ -76,5 +76,5 @@ export default async (ctx: Context) => {
   const data = extract(ctx)
   const doc = await update(ctx, data)
 
-  ctx.data(doc as KeyVal)
+  ctx.data(doc as Dictionary)
 }

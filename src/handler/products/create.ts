@@ -1,4 +1,4 @@
-import { KeyVal } from '@/core/types'
+import { Dictionary } from '@/core/types'
 import Context from '@/core/context'
 import Joi from 'joi'
 import _ from 'lodash'
@@ -43,7 +43,7 @@ const extract = (ctx: Context) => {
   return result.value
 }
 
-const create = async (ctx: Context, data: KeyVal) => {
+const create = async (ctx: Context, data: Dictionary) => {
   let doc = await ctx.db.findOne('products', {
     productCode: ctx.params.productCode
   })
