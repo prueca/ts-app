@@ -6,13 +6,13 @@ import _ from 'lodash'
 const extract = (ctx: Context) => {
   const data = _.pick(ctx.params, [
     'productCode',
-    'quantity',
+    'items',
   ])
 
   const schema = Joi.object()
     .keys({
       productCode: Joi.string().required(),
-      quantity: Joi.number().required(),
+      items: Joi.number().required(),
     })
 
   const result = schema.validate(data)
@@ -27,11 +27,11 @@ const extract = (ctx: Context) => {
 const restock = async (ctx: Context, data: Dictionary) => {
   const update = {
     $inc: {
-      stock: data.quantity
+      stock: data.items
     },
     $push: {
       stockUp: {
-        items: data.quantity,
+        items: data.items,
         date: new Date
       }
     }
