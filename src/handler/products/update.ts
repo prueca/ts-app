@@ -30,7 +30,7 @@ const extract = (ctx: Context) => {
   const result = schema.validate(data)
 
   if (result.error) {
-    return ctx.throw('validation_error')
+    ctx.throw('validation_error')
   }
 
   try {
@@ -38,7 +38,7 @@ const extract = (ctx: Context) => {
       _id: ctx.db.oid(result.value._id)
     })
   } catch (error) {
-    return ctx.throw('invalid_id')
+    ctx.throw('invalid_id')
   }
 
   return result.value
@@ -64,7 +64,7 @@ const update = async (ctx: Context, data: KeyVal) => {
   })
 
   if (doc) {
-    return ctx.throw('conflict', 'Product code already exists')
+    ctx.throw('conflict', 'Product code already exists')
   }
 
   doc = await ctx.db.findOneAndUpdate('products', filter, update)

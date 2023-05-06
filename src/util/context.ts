@@ -30,7 +30,16 @@ export default class Context {
   }
 
   static get(req: Request): Context {
-    return Context._bindings.get(req) as Context
+    const ctx = Context._bindings.get(req) as Context
+
+    _.assign(
+      ctx.params,
+      _.mapKeys(req.body, (_v, k) => k),
+      _.mapKeys(req.params, (_v, k) => k),
+      _.mapKeys(req.query, (_v, k) => k),
+    )
+
+    return ctx
   }
 
   data(data: KeyVal, filter?: string[]) {

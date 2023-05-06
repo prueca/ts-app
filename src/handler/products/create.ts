@@ -1,3 +1,4 @@
+import { KeyVal } from '@/type-def'
 import Context from '@/util/context'
 import Joi from 'joi'
 import _ from 'lodash'
@@ -27,7 +28,7 @@ const extract = (ctx: Context) => {
   const result = schema.validate(data)
 
   if (result.error) {
-    return ctx.throw('validation_error', result.error.message)
+    ctx.throw('validation_error', result.error.message)
   }
 
   _.assign(result.value, {
@@ -42,7 +43,7 @@ const extract = (ctx: Context) => {
   return result.value
 }
 
-const create = async (ctx: Context) => {
+const create = async (ctx: Context, data: KeyVal) => {
   let doc = await ctx.db.findOne('products', {
     productCode: ctx.params.productCode
   })
@@ -51,14 +52,14 @@ const create = async (ctx: Context) => {
     ctx.throw('conflict', 'Product code already exists')
   }
 
-  doc = await ctx.db.insertOne('products', ctx.params)
+  doc = await ctx.db.insertOne('products', data)
 
   return doc
 }
 
 export default async (ctx: Context) => {
   const data = extract(ctx)
-  const doc = await create(data)
+  const doc = await create(ctx, data)
 
   ctx.data(doc)
 }

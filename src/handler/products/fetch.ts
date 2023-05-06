@@ -1,4 +1,5 @@
 import Context from '@/util/context'
+import { KeyVal } from '@/type-def'
 
 export default async (ctx: Context) => {
   const doc = await ctx.db.findOne('products', {
@@ -6,8 +7,8 @@ export default async (ctx: Context) => {
   })
 
   if (!doc) {
-    return ctx.throw('not_found')
+    ctx.throw('not_found')
   }
 
-  ctx.data(doc)
+  ctx.data(doc as KeyVal)
 }
