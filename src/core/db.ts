@@ -32,10 +32,10 @@ export const oid = (id?: string) => {
   }
 }
 
-export const find = async (cName: string) => {
+export const find = async (cName: string, filter = {}, options?: Dictionary) => {
   const collection = await getCollection(cName)
 
-  return collection.find().toArray()
+  return collection.find(filter, options).toArray()
 }
 
 export const insertOne = async (cName: string, data: Dictionary, options?: Dictionary) => {
