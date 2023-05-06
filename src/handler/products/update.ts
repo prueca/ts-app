@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import Joi from 'joi'
 import _ from 'lodash'
-import { db } from '@/util'
+import { CustomError, db } from '@/util'
 import { JSON } from '@/type-def'
 
 const extract = (req: Request) => {
@@ -31,14 +31,18 @@ const extract = (req: Request) => {
   const result = schema.validate(data)
 
   if (result.error) {
-    return result
+    throw new CustomError('validation_error', 400)
   }
 
-  _.assign(result.value, {
-    _id: db.oid(result.value._id)
-  })
+  try {
+    _.assign(result.value, {
+      _id: db.oid(result.value._id)
+    })
+  } catch (error) {
+    throw new CustomError('invalid_id', 400)
+  }
 
-  return result
+  return result.value
 }
 
 const update = async (data: JSON) => {
@@ -60,13 +64,8 @@ const update = async (data: JSON) => {
 }
 
 export default async (req: Request, res: Response) => {
-  const { value, error } = extract(req)
-
-  if (error) {
-    return res.error('validation_error', error.message)
-  }
-
-  const doc = await update(value)
+  const data = extract(req)
+  const doc = await update(data)
 
   res.data(doc)
 }

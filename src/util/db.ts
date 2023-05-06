@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb'
 import { JSON } from '@/type-def'
-import { errors } from '@/util'
+import { CustomError } from '@/util'
 
 let client: MongoClient | null = null
 
@@ -28,7 +28,7 @@ export const oid = (id?: string) => {
   try {
     return new ObjectId(id)
   } catch (error: Error | unknown) {
-    throw new Error(errors.invalid_id)
+    throw new CustomError('invalid_id')
   }
 }
 

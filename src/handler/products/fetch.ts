@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { db } from '@/util'
+import { CustomError, db } from '@/util'
 
 export default async (req: Request, res: Response) => {
   const doc = await db.findOne('products', {
@@ -7,7 +7,7 @@ export default async (req: Request, res: Response) => {
   })
 
   if (!doc) {
-    return res.error('not_found')
+    throw new CustomError('not_found', 404)
   }
 
   res.data(doc)

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import _ from 'lodash'
 import { JSON } from '@/type-def'
-import { errors } from '@/util'
+import { CustomError } from '@/util'
 
 export default (_req: Request, res: Response, next: NextFunction) => {
   const data = (data: JSON, filter?: string[]) => {
@@ -14,22 +14,18 @@ export default (_req: Request, res: Response, next: NextFunction) => {
     return res.json({ data })
   }
 
-  const error = (error: string | Error, message?: string) => {
-    if (error instanceof Error) {
-      return res.json({
+  const error = (error: CustomError | Error) => {
+    const status = _.get(error, 'status', 500)
+    const code = _.get(error, 'code', 'unknown_error')
+    const message = _.get(error, 'message', '')
+
+    return res.status(status)
+      .json({
         error: {
-          code: 'unknown_error',
-          message: error.message || errors.unknown_error
+          code: code,
+          message: message
         }
       })
-    }
-
-    return res.json({
-      error: {
-        code: error,
-        message: message || errors[error as keyof typeof errors]
-      }
-    })
   }
 
   _.assign(res, { data, error })

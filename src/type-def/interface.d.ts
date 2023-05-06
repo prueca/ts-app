@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { CustomError } from '@/util'
 
 /**
  * Add property to express response object
@@ -11,7 +12,7 @@ declare global {
   export namespace Express {
     export interface Response {
       data: (data: JSON, filter?: string[]) => void,
-      error: (error: string | Error, message?: string | null) => void,
+      error: (code: CustomError | Error, status = 500) => void,
     }
   }
 }
