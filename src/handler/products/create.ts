@@ -34,7 +34,7 @@ const extract = (ctx: Context) => {
   _.assign(result.value, {
     stockUp: [
       {
-        pcs: result.value.stock,
+        items: result.value.stock,
         date: new Date
       }
     ]
