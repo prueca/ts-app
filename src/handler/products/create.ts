@@ -1,11 +1,9 @@
-import { Request, Response } from 'express'
+import Context from '@/util/context'
 import Joi from 'joi'
 import _ from 'lodash'
-import { CustomError, db } from '@/util'
-import { JSON } from '@/type-def'
 
-const extract = (req: Request) => {
-  const data = _.pick(req.body, [
+const extract = (ctx: Context) => {
+  const data = _.pick(ctx.params, [
     'productCode',
     'name',
     'description',
@@ -29,7 +27,7 @@ const extract = (req: Request) => {
   const result = schema.validate(data)
 
   if (result.error) {
-    throw new CustomError('validation_error', result.error.message)
+    return ctx.throw('validation_error', result.error.message)
   }
 
   _.assign(result.value, {
@@ -44,23 +42,23 @@ const extract = (req: Request) => {
   return result.value
 }
 
-const create = async (data: JSON) => {
-  let doc = await db.findOne('products', {
-    productCode: data.productCode
+const create = async (ctx: Context) => {
+  let doc = await ctx.db.findOne('products', {
+    productCode: ctx.params.productCode
   })
 
   if (doc) {
-    throw new CustomError('conflict', 'Product code already exists')
+    ctx.throw('conflict', 'Product code already exists')
   }
 
-  doc = await db.insertOne('products', data)
+  doc = await ctx.db.insertOne('products', ctx.params)
 
   return doc
 }
 
-export default async (req: Request, res: Response) => {
-  const data = extract(req)
+export default async (ctx: Context) => {
+  const data = extract(ctx)
   const doc = await create(data)
 
-  res.data(doc)
+  ctx.data(doc)
 }

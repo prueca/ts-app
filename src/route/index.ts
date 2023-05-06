@@ -1,9 +1,11 @@
 import { Router } from 'express'
+import wrap from '@/util/wrap-handler'
+import ping from '@/handler/ping'
 import products from './products'
 
 const router = Router()
 
-router.get('/ping', (_req, res) => res.data({ ping: 'pong' }))
+router.get('/ping', wrap(ping))
 router.use('/products', products)
 
 export default router

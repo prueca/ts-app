@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb'
-import { JSON } from '@/type-def'
-import { CustomError } from '@/util'
+import { KeyVal } from '@/type-def'
+import CustomError from '@/util/custom-error'
 
 let client: MongoClient | null = null
 
@@ -38,20 +38,20 @@ export const find = async (cName: string) => {
   return collection.find().toArray()
 }
 
-export const insertOne = async (cName: string, data: JSON, options?: JSON) => {
+export const insertOne = async (cName: string, data: KeyVal, options?: KeyVal) => {
   const collection = await getCollection(cName)
   const { insertedId } = await collection.insertOne(data, options)
 
   return { _id: insertedId, ...data }
 }
 
-export const findOne = async (cName: string, filter: JSON, options?: JSON) => {
+export const findOne = async (cName: string, filter: KeyVal, options?: KeyVal) => {
   const collection = await getCollection(cName)
 
   return collection.findOne(filter, options)
 }
 
-export const findOneAndUpdate = async (cName: string, filter: JSON, update: JSON, options?: JSON) => {
+export const findOneAndUpdate = async (cName: string, filter: KeyVal, update: KeyVal, options?: KeyVal) => {
   const collection = await getCollection(cName)
   const result = await collection.findOneAndUpdate(filter, update, {
     upsert: false,
@@ -62,7 +62,7 @@ export const findOneAndUpdate = async (cName: string, filter: JSON, update: JSON
   return result.value
 }
 
-export const count = async (cName: string, filter: JSON, options?: JSON) => {
+export const count = async (cName: string, filter: KeyVal, options?: KeyVal) => {
   const collection = await getCollection(cName)
 
   return collection.countDocuments(filter, options)

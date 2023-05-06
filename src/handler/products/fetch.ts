@@ -1,14 +1,13 @@
-import { Request, Response } from 'express'
-import { CustomError, db } from '@/util'
+import Context from '@/util/context'
 
-export default async (req: Request, res: Response) => {
-  const doc = await db.findOne('products', {
-    productCode: req.params.productCode
+export default async (ctx: Context) => {
+  const doc = await ctx.db.findOne('products', {
+    productCode: ctx.params.productCode
   })
 
   if (!doc) {
-    throw new CustomError('not_found')
+    return ctx.throw('not_found')
   }
 
-  res.data(doc)
+  ctx.data(doc)
 }

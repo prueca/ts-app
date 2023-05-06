@@ -1,11 +1,10 @@
-import { Request, Response } from 'express'
+import Context from '@/util/context'
+import { KeyVal } from '@/type-def'
 import Joi from 'joi'
 import _ from 'lodash'
-import { CustomError, db } from '@/util'
-import { JSON } from '@/type-def'
 
-const extract = (req: Request) => {
-  const data = _.pick(req.body, [
+const extract = (ctx: Context) => {
+  const data = _.pick(ctx.params, [
     '_id',
     'productCode',
     'name',
@@ -31,21 +30,21 @@ const extract = (req: Request) => {
   const result = schema.validate(data)
 
   if (result.error) {
-    throw new CustomError('validation_error')
+    return ctx.throw('validation_error')
   }
 
   try {
     _.assign(result.value, {
-      _id: db.oid(result.value._id)
+      _id: ctx.db.oid(result.value._id)
     })
   } catch (error) {
-    throw new CustomError('invalid_id')
+    return ctx.throw('invalid_id')
   }
 
   return result.value
 }
 
-const update = async (data: JSON) => {
+const update = async (ctx: Context, data: KeyVal) => {
   const filter = _.pick(data, ['_id'])
   const update = {
     $set: _.pick(data, [
@@ -59,23 +58,23 @@ const update = async (data: JSON) => {
     ])
   }
 
-  let doc = await db.findOne('products', {
+  let doc = await ctx.db.findOne('products', {
     _id: { $ne: data._id },
     productCode: data.productCode
   })
 
   if (doc) {
-    throw new CustomError('conflict', 'Product code already exists')
+    return ctx.throw('conflict', 'Product code already exists')
   }
 
-  doc = await db.findOneAndUpdate('products', filter, update)
+  doc = await ctx.db.findOneAndUpdate('products', filter, update)
 
   return { ...doc }
 }
 
-export default async (req: Request, res: Response) => {
-  const data = extract(req)
-  const doc = await update(data)
+export default async (ctx: Context) => {
+  const data = extract(ctx)
+  const doc = await update(ctx, data)
 
-  res.data(doc)
+  ctx.data(doc as KeyVal)
 }

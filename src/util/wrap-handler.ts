@@ -1,13 +1,16 @@
-import { Request, Response } from 'express'
+import { Request } from 'express'
 import { RequestHandler } from '@/type-def'
 import CustomError from './custom-error'
+import Context from './context'
 
 export default (handler: RequestHandler) => {
-  const wrapper = async (req: Request, res: Response) => {
+  const wrapper = async (req: Request) => {
+    const ctx = Context.get(req)
+
     try {
-      await handler(req, res)
+      await handler(ctx)
     } catch (error) {
-      res.error(error as CustomError)
+      ctx.error(error as CustomError)
     }
   }
 
