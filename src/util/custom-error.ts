@@ -3,6 +3,7 @@ const errors = {
   validation_error: 'Schema validation error',
   invalid_id: 'Invalid object id',
   not_found: 'Record not found',
+  conflict: 'Record already exists',
 }
 
 export default class CustomError extends Error {

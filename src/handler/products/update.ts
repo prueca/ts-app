@@ -7,24 +7,24 @@ import { JSON } from '@/type-def'
 const extract = (req: Request) => {
   const data = _.pick(req.body, [
     '_id',
-    'product_code',
+    'productCode',
     'name',
     'description',
-    'unit_price',
+    'unitPrice',
     'srp',
-    'pcs_per_case',
+    'itemsPerCase',
     'stock',
   ])
 
   const schema = Joi.object()
     .keys({
       _id: Joi.any().required(),
-      product_code: Joi.string(),
+      productCode: Joi.string(),
       name: Joi.string(),
       description: Joi.string(),
-      unit_price: Joi.number(),
+      unitPrice: Joi.number(),
       srp: Joi.number(),
-      pcs_per_case: Joi.number().allow(null),
+      itemsPerCase: Joi.number().allow(null),
       stock: Joi.number(),
     })
 
@@ -49,16 +49,30 @@ const update = async (data: JSON) => {
   const filter = _.pick(data, ['_id'])
   const update = {
     $set: _.pick(data, [
-      'product_code',
+      'productCode',
       'name',
       'description',
-      'unit_price',
+      'unitPrice',
       'srp',
-      'pcs_per_case',
+      'itemsPerCase',
       'stock',
     ])
   }
-  const doc = await db.findOneAndUpdate('products', filter, update)
+
+  let doc = await db.findOne('products', {
+    _id: { $ne: data._id },
+    productCode: data.productCode
+  })
+
+  if (doc) {
+    throw new CustomError(
+      'conflict',
+      409,
+      'Product code already exists'
+    )
+  }
+
+  doc = await db.findOneAndUpdate('products', filter, update)
 
   return { ...doc }
 }
