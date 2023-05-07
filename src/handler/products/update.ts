@@ -33,15 +33,11 @@ const extract = (ctx: Context) => {
     ctx.throw('validation_error')
   }
 
-  try {
-    _.assign(result.value, {
-      _id: ctx.db.oid(result.value._id)
-    })
-  } catch (error) {
-    ctx.throw('invalid_id')
-  }
+  _.assign(data, {
+    _id: ctx.db.oid(data._id)
+  })
 
-  return result.value
+  return data
 }
 
 const update = async (ctx: Context, data: Dictionary) => {

@@ -27,7 +27,7 @@ export const getCollection = async (cName: string) => {
 export const oid = (id?: string) => {
   try {
     return new ObjectId(id)
-  } catch (error: Error | unknown) {
+  } catch (error) {
     throw new CustomError('invalid_id')
   }
 }

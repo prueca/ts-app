@@ -32,7 +32,7 @@ const extract = (ctx: Context) => {
     ctx.throw('validation_error', result.error.message)
   }
 
-  return result.value
+  return data
 }
 
 const create = async (ctx: Context, data: Dictionary) => {
@@ -61,9 +61,7 @@ const available = (ctx: Context, item: Dictionary, product: Dictionary) => {
 
 const inStock = async (ctx: Context, data: Dictionary) => {
   const promises = _.map(data.items, async (item) => {
-    const product = await ctx.db.findOne('products', {
-      productCode: item.productCode
-    })
+    const product = await ctx.db.findOne('products', _.pick(item, 'productCode'))
 
     if (!product) {
       return ctx.throw('not_found', `Product '${item.productCode}' not found`)

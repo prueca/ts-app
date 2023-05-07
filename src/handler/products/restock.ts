@@ -21,7 +21,7 @@ const extract = (ctx: Context) => {
     ctx.throw('validation_error', result.error.message)
   }
 
-  return result.value
+  return data
 }
 
 const restock = async (ctx: Context, data: Dictionary) => {

@@ -18,7 +18,7 @@ const extract = (ctx: Context) => {
 
   if (data.lastKey) {
     try {
-      _.assign(result.value, {
+      _.assign(data, {
         lastKey: ctx.db.oid(data.lastKey)
       })
     } catch (error) {
@@ -26,7 +26,7 @@ const extract = (ctx: Context) => {
     }
   }
 
-  return result.value
+  return data
 }
 
 const list = async (ctx: Context, data: Dictionary) => {
