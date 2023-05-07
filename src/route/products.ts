@@ -1,14 +1,14 @@
 import { Router } from 'express'
-import wrap from '@/core/wrap-handler'
+import Context from '@/core/context'
 import * as products from '@/handler/products'
 
 const router = Router()
 
-router.get('/list/:lastKey?', wrap(products.list))
-router.get('/:productCode', wrap(products.fetch))
-router.post('/create', wrap(products.create))
-router.post('/update', wrap(products.update))
-router.post('/restock', wrap(products.restock))
-router.post('/archival', wrap(products.archival))
+router.get('/list/:lastKey?', Context.handle(products.list))
+router.get('/:productCode', Context.handle(products.fetch))
+router.post('/create', Context.handle(products.create))
+router.post('/update', Context.handle(products.update))
+router.post('/restock', Context.handle(products.restock))
+router.post('/archival', Context.handle(products.archival))
 
 export default router

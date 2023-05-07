@@ -1,5 +1,5 @@
-import { Request, Response } from 'express'
-import { Dictionary } from './types'
+import { Request, Response, NextFunction } from 'express'
+import { Dictionary, RequestHandler } from './types'
 import CustomError from './custom-error'
 import * as db from './db'
 import _ from 'lodash'
@@ -18,10 +18,27 @@ export default class Context {
     this._res = res
   }
 
-  static bind(req: Request, res: Response) {
-    const ctx = new Context(req, res)
+  static attach() {
+    return (req: Request, res: Response, next: NextFunction) => {
+      const ctx = new Context(req, res)
+      Context._bindings.set(req, ctx)
 
-    Context._bindings.set(req, ctx)
+      next()
+    }
+  }
+
+  static handle(method: RequestHandler) {
+    const wrapper = async (req: Request) => {
+      const ctx = Context.get(req)
+
+      try {
+        await method(ctx)
+      } catch (error) {
+        ctx.error(error as CustomError)
+      }
+    }
+
+    return wrapper
   }
 
   static get(req: Request): Context {
