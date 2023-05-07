@@ -18,7 +18,7 @@ export default class Context {
     this._res = res
   }
 
-  static binder() {
+  static attach() {
     return (req: Request, res: Response, next: NextFunction) => {
       const ctx = new Context(req, res)
       Context._bindings.set(req, ctx)

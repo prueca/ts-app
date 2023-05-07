@@ -14,7 +14,7 @@ import { connect } from '@/core/db'
 
     app.use(cors())
     app.use(express.json())
-    app.use(Context.binder())
+    app.use(Context.attach())
     app.use(routes)
 
     app.listen(PORT, () => console.log(`App running on port ${PORT}!`))
