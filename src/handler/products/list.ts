@@ -6,9 +6,9 @@ import _ from 'lodash'
 const PAGE_LIMIT = 50
 
 const extract = (ctx: Context) => {
-  const data = _.pick(ctx.params, ['lastKey'])
+  const data = _.pick(ctx.params, ['nextKey'])
   const schema = Joi.object()
-    .keys({ lastKey: Joi.string() })
+    .keys({ nextKey: Joi.string() })
 
   const result = schema.validate(data)
 
@@ -16,10 +16,10 @@ const extract = (ctx: Context) => {
     ctx.throw('validation_error', result.error.message)
   }
 
-  if (data.lastKey) {
+  if (data.nextKey) {
     try {
       _.assign(data, {
-        lastKey: ctx.db.oid(data.lastKey)
+        nextKey: ctx.db.oid(data.nextKey)
       })
     } catch (error) {
       ctx.throw('invalid_id')
@@ -33,9 +33,9 @@ const list = async (ctx: Context, data: Dictionary) => {
   const opts = { limit: PAGE_LIMIT }
   const query = {}
 
-  if (data.lastKey) {
+  if (data.nextKey) {
     _.assign(query, {
-      _id: { $gt: data.lastKey }
+      _id: { $gt: data.nextKey }
     })
   }
 
@@ -51,7 +51,7 @@ export default async (ctx: Context) => {
 
   if (docs.length) {
     _.assign(response, {
-      lastKey: _.get(_.last(docs), ['_id'], null)
+      nextKey: _.get(_.last(docs), ['_id'], null)
     })
   }
 
