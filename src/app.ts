@@ -2,8 +2,8 @@ import 'dotenv/config'
 import 'module-alias/register'
 import express from 'express'
 import cors from 'cors'
+import Context from '@/core/context'
 import routes from './route'
-import bindContext from '@/core/bind-context'
 import { connect } from '@/core/db'
 
 (async () => {
@@ -14,7 +14,7 @@ import { connect } from '@/core/db'
 
     app.use(cors())
     app.use(express.json())
-    app.use(bindContext)
+    app.use(Context.binder())
     app.use(routes)
 
     app.listen(PORT, () => console.log(`App running on port ${PORT}!`))
