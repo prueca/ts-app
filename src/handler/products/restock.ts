@@ -28,12 +28,6 @@ const restock = async (ctx: Context, data: Dictionary) => {
   const update = {
     $inc: {
       stock: data.items
-    },
-    $push: {
-      stockUp: {
-        items: data.items,
-        date: new Date
-      }
     }
   }
 

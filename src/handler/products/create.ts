@@ -31,15 +31,6 @@ const extract = (ctx: Context) => {
     ctx.throw('validation_error', result.error.message)
   }
 
-  _.assign(result.value, {
-    stockUp: [
-      {
-        items: result.value.stock,
-        date: new Date
-      }
-    ]
-  })
-
   return result.value
 }
 
