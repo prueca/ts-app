@@ -22,7 +22,11 @@ const errors = {
   missing_data: {
     status: 400,
     message: 'Missing data'
-  }
+  },
+  out_of_stock: {
+    status: 400,
+    message: 'Product is out of stock'
+  },
 }
 
 export default class CustomError extends Error {
