@@ -60,7 +60,8 @@ const available = (ctx: Context, item: Dictionary, product: Dictionary) => {
 }
 
 const inStock = async (ctx: Context, data: Dictionary) => {
-  const promises = _.map(data.items, async (item) => {
+  const outOfStock: Dictionary[] = []
+  const items = _.map(data.items, async (item) => {
     const product = await ctx.db.findOne('products', _.pick(item, 'productCode'))
 
     if (!product) {
@@ -68,17 +69,24 @@ const inStock = async (ctx: Context, data: Dictionary) => {
     }
 
     if (!available(ctx, item, product)) {
-      ctx.throw('out_of_stock', `Product '${item.productCode}' is out of stock`)
+      outOfStock.push(_.pick(product, ['productCode', 'name', 'stock']))
     }
   })
 
-  await Promise.all(promises)
+  await Promise.all(items)
+
+  return outOfStock
 }
 
 export default async (ctx: Context) => {
   const data = extract(ctx)
-  await inStock(ctx, data)
+  const outOfStock = await inStock(ctx, data)
+
+  if (outOfStock.length) {
+    return ctx.data(_.assign(data, { outOfStock }))
+  }
+
   const doc = await create(ctx, data)
 
-  ctx.data(doc)
+  return ctx.data(doc)
 }
