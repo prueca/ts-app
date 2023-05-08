@@ -1,12 +1,12 @@
 {
   "scripts": {
-    "dev": "tsc-watch --onSuccess \"node $npm_config_debug ./dist/app.js\"",
+    "dev": "tsc-watch --onSuccess \"node $npm_config_debug ./dist/server.js\"",
     "debug": "npm run dev --debug=\"--inspect=9229\"",
     "ntl:dev": "netlify functions:serve",
     "ntl:deploy": "netlify deploy",
     "lint": "eslint ./src/**/*",
     "build": "tsc -p .",
-    "start": "npm run build && node dist/app.js"
+    "start": "npm run build && node dist/server.js"
   },
   "_moduleAliases": {
     "@": "dist"
