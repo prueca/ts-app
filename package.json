@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node $npm_config_debug ./dist/app.js\"",
     "debug": "npm run dev --debug=\"--inspect=9229\"",
+    "ntl": "netlify functions:serve",
     "lint": "eslint ./src/**/*",
     "build": "tsc -p .",
     "start": "npm run build && node dist/app.js"
@@ -17,7 +18,8 @@
     "joi": "^17.9.2",
     "lodash": "^4.17.21",
     "module-alias": "^2.2.2",
-    "mongodb": "^5.4.0"
+    "mongodb": "^5.4.0",
+    "serverless-http": "^3.2.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
