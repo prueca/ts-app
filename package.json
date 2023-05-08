@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node $npm_config_debug ./dist/app.js\"",
     "debug": "npm run dev --debug=\"--inspect=9229\"",
-    "ntl": "netlify functions:serve",
+    "ntl:dev": "netlify functions:serve",
     "ntl:deploy": "netlify deploy",
     "lint": "eslint ./src/**/*",
     "build": "tsc -p .",

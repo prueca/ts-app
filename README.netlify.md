@@ -29,7 +29,7 @@ Add script in package.json
 ```
 "ntl": "netlify functions:serve"
 // or
-"ntl": "netlify dev"
+"ntl:dev": "netlify dev"
 ```
 
 Run script the script to access function
