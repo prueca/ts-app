@@ -1,9 +1,7 @@
-import app from '@/app'
-import routes from './route'
+import app from './app'
 
 const PORT = process.env.PORT || '8000'
 
-app.use(routes)
-app.listen(PORT || '8000', () => {
+app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`)
 })
