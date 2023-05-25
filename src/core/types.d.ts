@@ -1,15 +1,14 @@
 import Context from './context'
+import { MongoClient, ObjectId, Document, ClientSession } from 'mongodb'
 
-/**
- * Request handler definition
- */
 export interface RequestHandler {
-  (ctx: Context): Promise<unknown>
+  (ctx: Context): Promise<any>
 }
 
-/**
- * Definition for JSON objects
- */
 export interface Dictionary {
   [key: string]: any
 }
+
+export type Filter = string | ObjectId | Dictionary
+
+export { MongoClient, ObjectId, Document, ClientSession }
