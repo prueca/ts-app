@@ -65,17 +65,15 @@ export default class Context {
   }
 
   error(error: CustomError | Error) {
-    const status = _.get(error, 'status', 500)
     const code = _.get(error, 'code', 'unknown_error')
     const message = _.get(error, 'message', '')
 
-    return this._res.status(status)
-      .json({
-        error: {
-          code: code,
-          message: message
-        }
-      })
+    return this._res.json({
+      error: {
+        code: code,
+        message: message
+      }
+    })
   }
 
   request() {
