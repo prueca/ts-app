@@ -52,13 +52,21 @@ export const startSession = async () => {
   return client.startSession()
 }
 
-export const find = async (cName: string, query = {}, options?: FindOptions) => {
+export const find = async (
+  cName: string,
+  query = {},
+  options?: FindOptions,
+) => {
   const collection = await getCollection(cName)
 
   return collection.find(query, options).toArray()
 }
 
-export const findOne = async (cName: string, query: Query, options?: FindOptions) => {
+export const findOne = async (
+  cName: string,
+  query: Query,
+  options?: FindOptions,
+) => {
   const collection = await getCollection(cName)
 
   if (query instanceof ObjectId) {
@@ -70,26 +78,43 @@ export const findOne = async (cName: string, query: Query, options?: FindOptions
   return collection.findOne(query as Dict, options)
 }
 
-export const aggregate = async (cName: string, pipeline: Dict[], options?: AggregateOptions) => {
+export const aggregate = async (
+  cName: string,
+  pipeline: Dict[],
+  options?: AggregateOptions,
+) => {
   const collection = await getCollection(cName)
 
   return collection.aggregate(pipeline, options).toArray()
 }
 
-export const insertOne = async (cName: string, data: Dict, options?: InsertOneOptions) => {
+export const insertOne = async (
+  cName: string,
+  data: Dict,
+  options?: InsertOneOptions,
+) => {
   const collection = await getCollection(cName)
   const { insertedId } = await collection.insertOne(data, options)
 
   return { _id: insertedId, ...data }
 }
 
-export const insertMany = async (cName: string, data: Dict[], options?: BulkWriteOptions) => {
+export const insertMany = async (
+  cName: string,
+  data: Dict[],
+  options?: BulkWriteOptions,
+) => {
   const collection = await getCollection(cName)
 
   return collection.insertMany(data, options)
 }
 
-export const findOneAndUpdate = async (cName: string, query: Query, update: Dict, options?: FindOneAndUpdateOptions) => {
+export const findOneAndUpdate = async (
+  cName: string,
+  query: Query,
+  update: Dict,
+  options?: FindOneAndUpdateOptions,
+) => {
   const collection = await getCollection(cName)
 
   if (query instanceof ObjectId) {
@@ -101,13 +126,18 @@ export const findOneAndUpdate = async (cName: string, query: Query, update: Dict
   const result = await collection.findOneAndUpdate(query as Dict, update, {
     upsert: false,
     returnDocument: 'after',
-    ...options
+    ...options,
   })
 
   return result.value
 }
 
-export const updateOne = async (cName: string, query: Query, update: Dict, options?: UpdateOptions) => {
+export const updateOne = async (
+  cName: string,
+  query: Query,
+  update: Dict,
+  options?: UpdateOptions,
+) => {
   const collection = await getCollection(cName)
 
   if (query instanceof ObjectId) {
@@ -118,19 +148,27 @@ export const updateOne = async (cName: string, query: Query, update: Dict, optio
 
   const result = await collection.updateOne(query as Dict, update, {
     upsert: false,
-    ...options
+    ...options,
   })
 
   return result
 }
 
-export const count = async (cName: string, query: Dict, options?: CountDocumentsOptions) => {
+export const count = async (
+  cName: string,
+  query: Dict,
+  options?: CountDocumentsOptions,
+) => {
   const collection = await getCollection(cName)
 
   return collection.countDocuments(query, options)
 }
 
-export const exists = async (cName: string, query: Query, options?: CountDocumentsOptions) => {
+export const exists = async (
+  cName: string,
+  query: Query,
+  options?: CountDocumentsOptions,
+) => {
   if (query instanceof ObjectId) {
     query = { _id: query }
   } else if (typeof query === 'string') {

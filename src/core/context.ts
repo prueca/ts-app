@@ -57,7 +57,7 @@ export default class Context {
   data(data: Dict, filter?: string[]) {
     if (filter) {
       return this._res.json({
-        data: _.pick(data, filter)
+        data: _.pick(data, filter),
       })
     }
 
@@ -71,8 +71,8 @@ export default class Context {
     return this._res.json({
       error: {
         code: code,
-        message: message
-      }
+        message: message,
+      },
     })
   }
 
