@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { Dictionary, RequestHandler } from './types'
+import { Dict, RequestHandler } from './types'
 import CustomError from './custom-error'
 import * as db from './db'
 import _ from 'lodash'
@@ -10,7 +10,7 @@ export default class Context {
   private _req: Request
   private _res: Response
 
-  public params: Dictionary = {}
+  public params: Dict = {}
   public db = db
 
   constructor(req: Request, res: Response) {
@@ -54,7 +54,7 @@ export default class Context {
     return ctx
   }
 
-  data(data: Dictionary, filter?: string[]) {
+  data(data: Dict, filter?: string[]) {
     if (filter) {
       return this._res.json({
         data: _.pick(data, filter)

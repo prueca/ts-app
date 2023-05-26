@@ -1,4 +1,16 @@
-import { MongoClient, ObjectId, Dictionary, Filter } from './types'
+import {
+  MongoClient,
+  ObjectId,
+  Dict,
+  Query,
+  FindOptions,
+  AggregateOptions,
+  InsertOneOptions,
+  BulkWriteOptions,
+  FindOneAndUpdateOptions,
+  UpdateOptions,
+  CountDocumentsOptions,
+} from './types'
 import CustomError from './custom-error'
 
 let client: MongoClient | null = null
@@ -40,53 +52,53 @@ export const startSession = async () => {
   return client.startSession()
 }
 
-export const find = async (cName: string, filter = {}, options?: Dictionary) => {
+export const find = async (cName: string, query = {}, options?: FindOptions) => {
   const collection = await getCollection(cName)
 
-  return collection.find(filter, options).toArray()
+  return collection.find(query, options).toArray()
 }
 
-export const findOne = async (cName: string, filter: Filter, options?: Dictionary) => {
+export const findOne = async (cName: string, query: Query, options?: FindOptions) => {
   const collection = await getCollection(cName)
 
-  if (filter instanceof ObjectId) {
-    filter = { _id: filter }
-  } else if (typeof filter === 'string') {
-    filter = { _id: oid(filter) }
+  if (query instanceof ObjectId) {
+    query = { _id: query }
+  } else if (typeof query === 'string') {
+    query = { _id: oid(query) }
   }
 
-  return collection.findOne(filter as Dictionary, options)
+  return collection.findOne(query as Dict, options)
 }
 
-export const aggregate = async (cName: string, pipeline: Dictionary[], options?: Dictionary) => {
+export const aggregate = async (cName: string, pipeline: Dict[], options?: AggregateOptions) => {
   const collection = await getCollection(cName)
 
   return collection.aggregate(pipeline, options).toArray()
 }
 
-export const insertOne = async (cName: string, data: Dictionary, options?: Dictionary) => {
+export const insertOne = async (cName: string, data: Dict, options?: InsertOneOptions) => {
   const collection = await getCollection(cName)
   const { insertedId } = await collection.insertOne(data, options)
 
   return { _id: insertedId, ...data }
 }
 
-export const insertMany = async (cName: string, data: Dictionary[], options?: Dictionary) => {
+export const insertMany = async (cName: string, data: Dict[], options?: BulkWriteOptions) => {
   const collection = await getCollection(cName)
 
   return collection.insertMany(data, options)
 }
 
-export const findOneAndUpdate = async (cName: string, filter: Filter, update: Dictionary, options?: Dictionary) => {
+export const findOneAndUpdate = async (cName: string, query: Query, update: Dict, options?: FindOneAndUpdateOptions) => {
   const collection = await getCollection(cName)
 
-  if (filter instanceof ObjectId) {
-    filter = { _id: filter }
-  } else if (typeof filter === 'string') {
-    filter = { _id: oid(filter) }
+  if (query instanceof ObjectId) {
+    query = { _id: query }
+  } else if (typeof query === 'string') {
+    query = { _id: oid(query) }
   }
 
-  const result = await collection.findOneAndUpdate(filter as Dictionary, update, {
+  const result = await collection.findOneAndUpdate(query as Dict, update, {
     upsert: false,
     returnDocument: 'after',
     ...options
@@ -95,16 +107,16 @@ export const findOneAndUpdate = async (cName: string, filter: Filter, update: Di
   return result.value
 }
 
-export const updateOne = async (cName: string, filter: Filter, update: Dictionary, options?: Dictionary) => {
+export const updateOne = async (cName: string, query: Query, update: Dict, options?: UpdateOptions) => {
   const collection = await getCollection(cName)
 
-  if (filter instanceof ObjectId) {
-    filter = { _id: filter }
-  } else if (typeof filter === 'string') {
-    filter = { _id: oid(filter) }
+  if (query instanceof ObjectId) {
+    query = { _id: query }
+  } else if (typeof query === 'string') {
+    query = { _id: oid(query) }
   }
 
-  const result = await collection.updateOne(filter as Dictionary, update, {
+  const result = await collection.updateOne(query as Dict, update, {
     upsert: false,
     ...options
   })
@@ -112,20 +124,20 @@ export const updateOne = async (cName: string, filter: Filter, update: Dictionar
   return result
 }
 
-export const count = async (cName: string, filter: Dictionary, options?: Dictionary) => {
+export const count = async (cName: string, query: Dict, options?: CountDocumentsOptions) => {
   const collection = await getCollection(cName)
 
-  return collection.countDocuments(filter, options)
+  return collection.countDocuments(query, options)
 }
 
-export const exists = async (cName: string, filter: Filter, options?: Dictionary) => {
-  if (filter instanceof ObjectId) {
-    filter = { _id: filter }
-  } else if (typeof filter === 'string') {
-    filter = { _id: oid(filter) }
+export const exists = async (cName: string, query: Query, options?: CountDocumentsOptions) => {
+  if (query instanceof ObjectId) {
+    query = { _id: query }
+  } else if (typeof query === 'string') {
+    query = { _id: oid(query) }
   }
 
-  const result = await count(cName, filter, { ...options, limit: 1 })
+  const result = await count(cName, query, { ...options, limit: 1 })
 
   return result > 0
 }
