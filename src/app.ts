@@ -7,7 +7,7 @@ import routes from './route'
 import { connect } from '@/core/db'
 
 const run = async () => {
-  if (!Number(process.env.DB_OFF)) {
+  if (process.env.MONGO_URI) {
     await connect()
   }
 
