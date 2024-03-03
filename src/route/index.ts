@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import Context from '@/core/context'
+import Context from '@/lib/context'
 import ping from '@/handler/ping'
 
 const router = Router()

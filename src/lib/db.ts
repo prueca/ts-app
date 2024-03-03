@@ -1,8 +1,6 @@
 import {
   MongoClient,
   ObjectId,
-  Dict,
-  Query,
   FindOptions,
   AggregateOptions,
   InsertOneOptions,
@@ -10,8 +8,9 @@ import {
   FindOneAndUpdateOptions,
   UpdateOptions,
   CountDocumentsOptions,
-} from './types'
-import CustomError from './custom-error'
+} from 'mongodb'
+import { Dict, Query } from './types'
+import Err from './error'
 
 let client: MongoClient | null = null
 
@@ -39,7 +38,7 @@ export const oid = (id?: string) => {
   try {
     return new ObjectId(id)
   } catch (error) {
-    throw new CustomError('invalid_id')
+    throw new Err('invalid_id')
   }
 }
 

@@ -2,9 +2,9 @@ import 'dotenv/config'
 import 'module-alias/register'
 import express from 'express'
 import cors from 'cors'
-import Context from '@/core/context'
+import Context from '@/lib/context'
 import routes from './route'
-import { connect } from '@/core/db'
+import { connect } from '@/lib/db'
 
 const run = async () => {
   if (process.env.MONGO_URI) {

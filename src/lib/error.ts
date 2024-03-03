@@ -7,7 +7,7 @@ const errors = {
   missing_data: 'Missing data',
 }
 
-export default class CustomError extends Error {
+export default class Err extends Error {
   code = 'unknown_error'
   message = 'Unknown server error'
 

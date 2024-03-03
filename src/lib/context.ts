@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { Dict, RequestHandler } from './types'
-import CustomError from './custom-error'
+import Err from './error'
 import * as db from './db'
 import _ from 'lodash'
 
@@ -34,7 +34,7 @@ export default class Context {
       try {
         await method(ctx)
       } catch (error) {
-        ctx.error(error as CustomError)
+        ctx.error(error as Err)
       }
     }
 
@@ -64,7 +64,7 @@ export default class Context {
     return this._res.json({ data })
   }
 
-  error(error: CustomError | Error) {
+  error(error: Err | Error) {
     const code = _.get(error, 'code', 'unknown_error')
     const message = _.get(error, 'message', '')
 
@@ -85,6 +85,6 @@ export default class Context {
   }
 
   throw(errorCode: string, message?: string) {
-    throw new CustomError(errorCode, message)
+    throw new Err(errorCode, message)
   }
 }
