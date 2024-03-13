@@ -41,6 +41,25 @@ export default class Context {
     return wrapper
   }
 
+  static middleware(method: RequestHandler) {
+    const wrapper = async (
+      req: Request,
+      _res: Response,
+      next: NextFunction,
+    ) => {
+      const ctx = Context.get(req)
+
+      try {
+        await method(ctx)
+        next()
+      } catch (error) {
+        ctx.error(error as Err)
+      }
+    }
+
+    return wrapper
+  }
+
   static get(req: Request): Context {
     const ctx = Context._bindings.get(req) as Context
 
