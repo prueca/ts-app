@@ -9,7 +9,7 @@ import {
   UpdateOptions,
   CountDocumentsOptions,
 } from 'mongodb'
-import { Dict, Query } from './types'
+import { Obj, Query } from './types'
 import Err from './error'
 
 let client: MongoClient | null = null
@@ -74,12 +74,12 @@ export const findOne = async (
     query = { _id: oid(query) }
   }
 
-  return collection.findOne(query as Dict, options)
+  return collection.findOne(query as Obj, options)
 }
 
 export const aggregate = async (
   cName: string,
-  pipeline: Dict[],
+  pipeline: Obj[],
   options?: AggregateOptions,
 ) => {
   const collection = await getCollection(cName)
@@ -89,7 +89,7 @@ export const aggregate = async (
 
 export const insertOne = async (
   cName: string,
-  data: Dict,
+  data: Obj,
   options?: InsertOneOptions,
 ) => {
   const collection = await getCollection(cName)
@@ -100,7 +100,7 @@ export const insertOne = async (
 
 export const insertMany = async (
   cName: string,
-  data: Dict[],
+  data: Obj[],
   options?: BulkWriteOptions,
 ) => {
   const collection = await getCollection(cName)
@@ -111,7 +111,7 @@ export const insertMany = async (
 export const findOneAndUpdate = async (
   cName: string,
   query: Query,
-  update: Dict,
+  update: Obj,
   options?: FindOneAndUpdateOptions,
 ) => {
   const collection = await getCollection(cName)
@@ -122,7 +122,7 @@ export const findOneAndUpdate = async (
     query = { _id: oid(query) }
   }
 
-  const result = await collection.findOneAndUpdate(query as Dict, update, {
+  const result = await collection.findOneAndUpdate(query as Obj, update, {
     upsert: false,
     returnDocument: 'after',
     ...options,
@@ -134,7 +134,7 @@ export const findOneAndUpdate = async (
 export const updateOne = async (
   cName: string,
   query: Query,
-  update: Dict,
+  update: Obj,
   options?: UpdateOptions,
 ) => {
   const collection = await getCollection(cName)
@@ -145,7 +145,7 @@ export const updateOne = async (
     query = { _id: oid(query) }
   }
 
-  const result = await collection.updateOne(query as Dict, update, {
+  const result = await collection.updateOne(query as Obj, update, {
     upsert: false,
     ...options,
   })
@@ -155,7 +155,7 @@ export const updateOne = async (
 
 export const count = async (
   cName: string,
-  query: Dict,
+  query: Obj,
   options?: CountDocumentsOptions,
 ) => {
   const collection = await getCollection(cName)

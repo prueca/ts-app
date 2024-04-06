@@ -5,8 +5,8 @@ export interface RequestHandler {
   (ctx: Context): Promise<any>
 }
 
-export type Dict = {
+export type Obj = {
   [key: string]: any
 }
 
-export type Query = string | ObjectId | Dict
+export type Query = string | ObjectId | Obj
