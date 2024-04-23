@@ -71,6 +71,10 @@ export default class Context {
     return this._res.json({ data })
   }
 
+  setHeaders(headers: Obj) {
+    this._res.set(headers)
+  }
+
   error(error: Err | Error) {
     const code = _.get(error, 'code', 'unknown_error')
     const message = _.get(error, 'message', '')
