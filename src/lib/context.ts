@@ -11,6 +11,8 @@ export default class Context {
   private _res: Response
 
   public params: Obj = {}
+  public headers: Obj = {}
+  public locals: Obj = {}
   public db = db
 
   constructor(req: Request, res: Response) {
@@ -28,20 +30,6 @@ export default class Context {
   }
 
   static handle(method: RequestHandler) {
-    const wrapper = async (req: Request) => {
-      const ctx = Context.get(req)
-
-      try {
-        await method(ctx)
-      } catch (error) {
-        ctx.error(error as Err)
-      }
-    }
-
-    return wrapper
-  }
-
-  static middleware(method: RequestHandler) {
     const wrapper = async (
       req: Request,
       _res: Response,
