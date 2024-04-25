@@ -76,6 +76,10 @@ export default class Context {
     this._res.set(headers)
   }
 
+  removeHeaders(headers: string[]) {
+    _.map(headers, (x) => this._res.removeHeader(x))
+  }
+
   redirect(uri: string) {
     this._res.redirect(uri)
   }
