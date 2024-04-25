@@ -30,16 +30,15 @@ export default class Context {
   }
 
   static handle(method: RequestHandler) {
-    const wrapper = async (
-      req: Request,
-      _res: Response,
-      next: NextFunction,
-    ) => {
+    const wrapper = async (req: Request, res: Response, next: NextFunction) => {
       const ctx = Context.get(req)
 
       try {
         await method(ctx)
-        next()
+
+        if (!res.headersSent) {
+          next()
+        }
       } catch (error) {
         ctx.error(error as Err)
       }
