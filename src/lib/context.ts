@@ -58,6 +58,8 @@ export default class Context {
       _.mapKeys(req.body, (_v, k) => k),
     )
 
+    ctx.headers = req.headers
+
     return ctx
   }
 
@@ -73,6 +75,10 @@ export default class Context {
 
   setHeaders(headers: Obj) {
     this._res.set(headers)
+  }
+
+  redirect(uri: string) {
+    this._res.redirect(uri)
   }
 
   error(error: Err | Error) {
