@@ -1,8 +1,10 @@
-import { Request, Response, NextFunction } from 'express'
+import path from 'path';
+import { Request, Response, NextFunction, Errback } from 'express'
+import _ from 'lodash'
+
 import { Obj, RequestHandler } from './types'
 import Err from './error'
 import * as db from './db'
-import _ from 'lodash'
 
 export default class Context {
   static _bindings = new WeakMap<Request, Context>()
@@ -82,6 +84,12 @@ export default class Context {
 
   redirect(uri: string) {
     this._res.redirect(uri)
+  }
+
+  download(file: string, callback?: Errback) {
+    const filePath = path.join(__dirname, `../../${process.env.DOWNLOADABLES}` as string, file);
+
+    this._res.download(filePath, callback)
   }
 
   error(error: Err | Error) {
