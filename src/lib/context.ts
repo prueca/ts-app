@@ -1,5 +1,5 @@
-import path from 'path';
-import { Request, Response, NextFunction, Errback } from 'express'
+import path from 'path'
+import { Request, Response, NextFunction } from 'express'
 import _ from 'lodash'
 
 import { Obj, RequestHandler } from './types'
@@ -86,10 +86,14 @@ export default class Context {
     this._res.redirect(uri)
   }
 
-  download(file: string, callback?: Errback) {
-    const filePath = path.join(__dirname, `../../${process.env.DOWNLOADABLES}` as string, file);
+  async download(file: string) {
+    await new Promise<void>((resolve, reject) => {
+      const filePath = path.join(__dirname, '../public', file)
 
-    this._res.download(filePath, callback)
+      this._res.download(filePath, (err: Error) => {
+        err ? reject(err) : resolve()
+      })
+    })
   }
 
   error(error: Err | Error) {
