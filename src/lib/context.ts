@@ -7,116 +7,120 @@ import Err from './error'
 import * as db from './db'
 
 export default class Context {
-  static _bindings = new WeakMap<Request, Context>()
+    static _bindings = new WeakMap<Request, Context>()
 
-  private _req: Request
-  private _res: Response
+    private _req: Request
+    private _res: Response
 
-  public params: Obj = {}
-  public headers: Obj = {}
-  public locals: Obj = {}
-  public db = db
+    public params: Obj = {}
+    public headers: Obj = {}
+    public locals: Obj = {}
+    public db = db
 
-  constructor(req: Request, res: Response) {
-    this._req = req
-    this._res = res
-  }
-
-  static attach() {
-    return (req: Request, res: Response, next: NextFunction) => {
-      const ctx = new Context(req, res)
-      Context._bindings.set(req, ctx)
-
-      next()
+    constructor(req: Request, res: Response) {
+        this._req = req
+        this._res = res
     }
-  }
 
-  static handle(method: RequestHandler) {
-    const wrapper = async (req: Request, res: Response, next: NextFunction) => {
-      const ctx = Context.get(req)
+    static attach() {
+        return (req: Request, res: Response, next: NextFunction) => {
+            const ctx = new Context(req, res)
+            Context._bindings.set(req, ctx)
 
-      try {
-        await method(ctx)
-
-        if (!res.headersSent) {
-          next()
+            next()
         }
-      } catch (error) {
-        ctx.error(error as Err)
-      }
     }
 
-    return wrapper
-  }
+    static handle(method: RequestHandler) {
+        const wrapper = async (
+            req: Request,
+            res: Response,
+            next: NextFunction,
+        ) => {
+            const ctx = Context.get(req)
 
-  static get(req: Request): Context {
-    const ctx = Context._bindings.get(req) as Context
+            try {
+                await method(ctx)
 
-    _.assign(
-      ctx.params,
-      _.mapKeys(req.query, (_v, k) => k),
-      _.mapKeys(req.params, (_v, k) => k),
-      _.mapKeys(req.body, (_v, k) => k),
-    )
+                if (!res.headersSent) {
+                    next()
+                }
+            } catch (error) {
+                ctx.error(error as Err)
+            }
+        }
 
-    ctx.headers = req.headers
-
-    return ctx
-  }
-
-  data(data: Obj, filter?: string[]) {
-    if (filter) {
-      return this._res.json({
-        data: _.pick(data, filter),
-      })
+        return wrapper
     }
 
-    return this._res.json({ data })
-  }
+    static get(req: Request): Context {
+        const ctx = Context._bindings.get(req) as Context
 
-  setHeaders(headers: Obj) {
-    this._res.set(headers)
-  }
+        _.assign(
+            ctx.params,
+            _.mapKeys(req.query, (_v, k) => k),
+            _.mapKeys(req.params, (_v, k) => k),
+            _.mapKeys(req.body, (_v, k) => k),
+        )
 
-  removeHeaders(headers: string[]) {
-    _.map(headers, (x) => this._res.removeHeader(x))
-  }
+        ctx.headers = req.headers
 
-  redirect(uri: string) {
-    this._res.redirect(uri)
-  }
+        return ctx
+    }
 
-  async download(file: string) {
-    await new Promise<void>((resolve, reject) => {
-      const filePath = path.join(__dirname, '../public', file)
+    data(data: Obj, filter?: string[]) {
+        if (filter) {
+            return this._res.json({
+                data: _.pick(data, filter),
+            })
+        }
 
-      this._res.download(filePath, (err: Error) => {
-        err ? reject(err) : resolve()
-      })
-    })
-  }
+        return this._res.json({ data })
+    }
 
-  error(error: Err | Error) {
-    const code = _.get(error, 'code', 'unknown_error')
-    const message = _.get(error, 'message', '')
+    setHeaders(headers: Obj) {
+        this._res.set(headers)
+    }
 
-    return this._res.json({
-      error: {
-        code: code,
-        message: message,
-      },
-    })
-  }
+    removeHeaders(headers: string[]) {
+        _.map(headers, (x) => this._res.removeHeader(x))
+    }
 
-  request() {
-    return this._req
-  }
+    redirect(uri: string) {
+        this._res.redirect(uri)
+    }
 
-  response() {
-    return this._res
-  }
+    async download(file: string) {
+        await new Promise<void>((resolve, reject) => {
+            const filePath = path.join(__dirname, '../public', file)
 
-  throw(errorCode: string, message?: string) {
-    throw new Err(errorCode, message)
-  }
+            this._res.download(filePath, (err: Error) => {
+                err ? reject(err) : resolve()
+            })
+        })
+    }
+
+    error(error: Err | Error) {
+        const code = _.get(error, 'code', 'unknown_error')
+        const message = _.get(error, 'message', '')
+
+        return this._res.json({
+            error: {
+                code: code,
+                message: message,
+            },
+        })
+    }
+
+    request() {
+        return this._req
+    }
+
+    response() {
+        return this._res
+    }
+
+    throw(errorCode: string, message?: string) {
+        throw new Err(errorCode, message)
+    }
 }
