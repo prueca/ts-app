@@ -9,8 +9,8 @@ import {
     UpdateOptions,
     CountDocumentsOptions,
 } from 'mongodb'
-import { Obj, Query } from './types'
-import Err from './error'
+import { Dictionary, Query } from './types'
+import Err from './exception'
 
 let client: MongoClient | null = null
 
@@ -74,12 +74,12 @@ export const findOne = async (
         query = { _id: oid(query) }
     }
 
-    return collection.findOne(query as Obj, options)
+    return collection.findOne(query as Dictionary, options)
 }
 
 export const aggregate = async (
     cName: string,
-    pipeline: Obj[],
+    pipeline: Dictionary[],
     options?: AggregateOptions,
 ) => {
     const collection = await getCollection(cName)
@@ -89,7 +89,7 @@ export const aggregate = async (
 
 export const insertOne = async (
     cName: string,
-    data: Obj,
+    data: Dictionary,
     options?: InsertOneOptions,
 ) => {
     const collection = await getCollection(cName)
@@ -100,7 +100,7 @@ export const insertOne = async (
 
 export const insertMany = async (
     cName: string,
-    data: Obj[],
+    data: Dictionary[],
     options?: BulkWriteOptions,
 ) => {
     const collection = await getCollection(cName)
@@ -111,7 +111,7 @@ export const insertMany = async (
 export const findOneAndUpdate = async (
     cName: string,
     query: Query,
-    update: Obj,
+    update: Dictionary,
     options?: FindOneAndUpdateOptions,
 ) => {
     const collection = await getCollection(cName)
@@ -122,11 +122,15 @@ export const findOneAndUpdate = async (
         query = { _id: oid(query) }
     }
 
-    const result = await collection.findOneAndUpdate(query as Obj, update, {
-        upsert: false,
-        returnDocument: 'after',
-        ...options,
-    })
+    const result = await collection.findOneAndUpdate(
+        query as Dictionary,
+        update,
+        {
+            upsert: false,
+            returnDocument: 'after',
+            ...options,
+        },
+    )
 
     return result.value
 }
@@ -134,7 +138,7 @@ export const findOneAndUpdate = async (
 export const updateOne = async (
     cName: string,
     query: Query,
-    update: Obj,
+    update: Dictionary,
     options?: UpdateOptions,
 ) => {
     const collection = await getCollection(cName)
@@ -145,7 +149,7 @@ export const updateOne = async (
         query = { _id: oid(query) }
     }
 
-    const result = await collection.updateOne(query as Obj, update, {
+    const result = await collection.updateOne(query as Dictionary, update, {
         upsert: false,
         ...options,
     })
@@ -155,7 +159,7 @@ export const updateOne = async (
 
 export const count = async (
     cName: string,
-    query: Obj,
+    query: Dictionary,
     options?: CountDocumentsOptions,
 ) => {
     const collection = await getCollection(cName)

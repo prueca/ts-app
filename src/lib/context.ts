@@ -2,8 +2,8 @@ import path from 'path'
 import { Request, Response, NextFunction } from 'express'
 import _ from 'lodash'
 
-import { Obj, RequestHandler } from './types'
-import Err from './error'
+import { Dictionary, RequestHandler } from './types'
+import Exception from './exception'
 import * as db from './db'
 
 export default class Context {
@@ -12,9 +12,9 @@ export default class Context {
     private _req: Request
     private _res: Response
 
-    public params: Obj = {}
-    public headers: Obj = {}
-    public locals: Obj = {}
+    public params: Dictionary = {}
+    public headers: Dictionary = {}
+    public locals: Dictionary = {}
     public db = db
 
     constructor(req: Request, res: Response) {
@@ -31,22 +31,35 @@ export default class Context {
         }
     }
 
-    static handle(method: RequestHandler) {
+    static handler(method: RequestHandler) {
+        const wrapper = async (req: Request) => {
+            const ctx = Context.get(req)
+
+            try {
+                const data: Dictionary = await method(ctx)
+
+                return ctx.response.json(data)
+            } catch (ex) {
+                ctx.catch(ex as Exception)
+            }
+        }
+
+        return wrapper
+    }
+
+    static middleware(method: RequestHandler) {
         const wrapper = async (
             req: Request,
-            res: Response,
+            _res: Response,
             next: NextFunction,
         ) => {
             const ctx = Context.get(req)
 
             try {
                 await method(ctx)
-
-                if (!res.headersSent) {
-                    next()
-                }
-            } catch (error) {
-                ctx.error(error as Err)
+                next()
+            } catch (ex) {
+                ctx.catch(ex as Exception)
             }
         }
 
@@ -68,17 +81,7 @@ export default class Context {
         return ctx
     }
 
-    data(data: Obj, filter?: string[]) {
-        if (filter) {
-            return this._res.json({
-                data: _.pick(data, filter),
-            })
-        }
-
-        return this._res.json({ data })
-    }
-
-    setHeaders(headers: Obj) {
+    setHeaders(headers: Dictionary) {
         this._res.set(headers)
     }
 
@@ -100,9 +103,9 @@ export default class Context {
         })
     }
 
-    error(error: Err | Error) {
-        const code = _.get(error, 'code', 'unknown_error')
-        const message = _.get(error, 'message', '')
+    catch(e: Exception | Error) {
+        const code = _.get(e, 'code', 'unknown_error')
+        const message = _.get(e, 'message', '')
 
         return this._res.json({
             error: {
@@ -112,15 +115,11 @@ export default class Context {
         })
     }
 
-    request() {
+    get request() {
         return this._req
     }
 
-    response() {
+    get response() {
         return this._res
-    }
-
-    throw(errorCode: string, message?: string) {
-        throw new Err(errorCode, message)
     }
 }

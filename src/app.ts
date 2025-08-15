@@ -17,7 +17,7 @@ const run = async () => {
     app.use(Context.attach())
     app.use(routes)
 
-    app.listen(PORT, () => console.log(`App running on port ${PORT}!`))
+    app.listen(PORT, () => console.log(`App running on port ${PORT}`))
 }
 
 run()

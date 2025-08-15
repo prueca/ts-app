@@ -4,6 +4,6 @@ import ping from '@/handler/ping'
 
 const router = Router()
 
-router.get('/ping', Context.handle(ping))
+router.get('/ping', Context.handler(ping))
 
 export default router
