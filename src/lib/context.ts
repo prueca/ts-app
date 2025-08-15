@@ -2,7 +2,7 @@ import path from 'path'
 import { Request, Response, NextFunction } from 'express'
 import _ from 'lodash'
 
-import { Dictionary, RequestHandler } from './types'
+import { PlainObject, RequestHandler } from './types'
 import Exception from './exception'
 import * as db from './db'
 
@@ -12,9 +12,9 @@ export default class Context {
     private _req: Request
     private _res: Response
 
-    public params: Dictionary = {}
-    public headers: Dictionary = {}
-    public locals: Dictionary = {}
+    public params: PlainObject = {}
+    public headers: PlainObject = {}
+    public locals: PlainObject = {}
     public db = db
 
     constructor(req: Request, res: Response) {
@@ -36,7 +36,7 @@ export default class Context {
             const ctx = Context.get(req)
 
             try {
-                const data: Dictionary = await method(ctx)
+                const data: PlainObject = await method(ctx)
 
                 return ctx.response.json(data)
             } catch (ex) {
@@ -81,7 +81,7 @@ export default class Context {
         return ctx
     }
 
-    setHeaders(headers: Dictionary) {
+    setHeaders(headers: PlainObject) {
         this._res.set(headers)
     }
 
