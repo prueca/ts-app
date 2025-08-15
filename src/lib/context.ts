@@ -5,6 +5,7 @@ import _ from 'lodash'
 import { PlainObject, RequestHandler } from './types'
 import Exception from './exception'
 import * as db from './db'
+import assert from 'assert'
 
 export default class Context {
     static _bindings = new WeakMap<Request, Context>()
@@ -37,6 +38,8 @@ export default class Context {
 
             try {
                 const data: PlainObject = await method(ctx)
+
+                assert.ok(_.isPlainObject(data))
 
                 return ctx.response.json(data)
             } catch (ex) {
