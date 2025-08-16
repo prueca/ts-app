@@ -5,6 +5,7 @@ import _ from 'lodash'
 import { PlainObject, RequestHandler } from './types'
 import Exception from './exception'
 import * as db from './db'
+import assert from 'assert'
 
 export default class Context {
     static _bindings = new WeakMap<Request, Context>()
@@ -36,17 +37,7 @@ export default class Context {
             const ctx = Context.get(req)
 
             try {
-                const data = await method(ctx)
-
-                if (ctx.response.headersSent) {
-                    return
-                }
-
-                if (_.isPlainObject(data)) {
-                    return ctx.response.json(data)
-                }
-
-                return ctx.response.end()
+                await method(ctx)
             } catch (ex) {
                 ctx.catch(ex as Exception)
             }
@@ -99,6 +90,12 @@ export default class Context {
 
     redirect(uri: string) {
         this._res.redirect(uri)
+    }
+
+    send(data: PlainObject) {
+        assert.ok(_.isPlainObject(data))
+
+        this._res.json(data)
     }
 
     async download(file: string) {
