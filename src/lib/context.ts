@@ -37,7 +37,11 @@ export default class Context {
             const ctx = Context.get(req)
 
             try {
-                await method(ctx)
+                const response = await method(ctx)
+
+                if (_.isPlainObject(response)) {
+                    ctx.send(response)
+                }
             } catch (ex) {
                 ctx.catch(ex as Exception)
             }
