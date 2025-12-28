@@ -40,7 +40,9 @@ export default class Context {
                 const response = await method(ctx)
 
                 if (_.isPlainObject(response)) {
-                    ctx.send(response)
+                    ctx._res.json(response)
+                } else {
+                    ctx._res.end()
                 }
             } catch (ex) {
                 ctx.catch(ex as Exception)
