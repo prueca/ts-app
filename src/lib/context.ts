@@ -2,7 +2,7 @@ import path from 'path'
 import { Request, Response, NextFunction } from 'express'
 import _ from 'lodash'
 
-import { PlainObject, RequestHandler } from './types'
+import { Middleware, PlainObject, RequestHandler } from './types'
 import Exception from './exception'
 import * as db from './db'
 import assert from 'assert'
@@ -52,7 +52,7 @@ export default class Context {
         return wrapper
     }
 
-    static middleware(method: RequestHandler) {
+    static middleware(method: Middleware) {
         const wrapper = async (
             req: Request,
             _res: Response,
@@ -61,8 +61,7 @@ export default class Context {
             const ctx = Context.get(req)
 
             try {
-                await method(ctx)
-                next()
+                await method(ctx, next)
             } catch (ex) {
                 ctx.catch(ex as Exception)
             }
