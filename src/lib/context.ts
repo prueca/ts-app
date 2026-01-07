@@ -97,10 +97,10 @@ export default class Context {
         this._res.redirect(uri)
     }
 
-    send(data: PlainObject) {
+    send(data: PlainObject, statusCode = 200) {
         assert.ok(_.isPlainObject(data))
 
-        this._res.json(data)
+        this._res.status(statusCode).json(data)
     }
 
     async download(file: string) {
