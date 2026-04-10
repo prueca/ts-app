@@ -1,4 +1,6 @@
 {
+    "type": "module",
+    "license": "UNLICENSED",
     "scripts": {
         "dev": "tsx watch ./src/app.ts",
         "debug": "tsx watch --inspect ./src/app.ts",
